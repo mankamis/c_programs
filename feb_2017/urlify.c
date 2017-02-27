@@ -20,6 +20,8 @@
 #include <time.h>
 #include "utility.h"
 
+#define MAX 3 /* Max char to fill. in this case its %20 which is 3*/
+
 /*
  *  This API is brute force method. 
  * Time complexity  O(n)
@@ -32,6 +34,7 @@ char * replace_blanck_space_brute_force_method (char *str, int len)
             __FUNCTION__, str, len);
     if (str == NULL) {
         printf ("\nBlanck string. No operation needed \n");
+        return NULL;
     }
 
     /*
@@ -79,16 +82,139 @@ char * replace_blanck_space_brute_force_method (char *str, int len)
     return str_new;
 }
 
+/*
+ * Assumption : string has enough space in last to fit char. 
+ *
+ */
+void string_replace_by_api (char *str, int len) 
+{
+    if (str == NULL || len == 0) {
+        printf ("\n Invalid string\n");
+        return;
+    }
+
+    int index = 0; 
+    int temp_index_1 = 0; 
+    int temp_index_2 = 0; 
+    int count = 0;
+    int is_space_flag = FALSE;
+    int last_processed_index = 0;
+
+    for (index = 0; index < len; index ++) {
+
+        /*
+         * if reached end of string. return. no need to process further.
+         */
+        if (str[index] == '\0') {
+            str[last_processed_index] = '\0';
+            return;
+        }
+        /*
+         * if we are having not blank space char and flag is off it means
+         * we do not have previously blank space . keep going
+         */
+        if ((str[index] != ' ') && (!is_space_flag)) {
+            continue;
+        }
+
+        /*
+         * if we have hit blank space, set the flag. start count. we need to 
+         * check how many blank space are there before we hit next char. 
+         * if we hit end of string, no need to process. 
+         */
+        if (str[index] == ' ') {
+            is_space_flag = TRUE;
+            count ++;
+        }
+
+        /*
+         * If we have hit non space char and previous space flag is set.
+         * it means after count number of blank space we have hit new char.
+         * now in all of the blank space we need to fill %20. but there are 
+         * 3 case to be considered with respect to shifting elements.  
+         * 1 -  If count of blank space is == MAX 
+         *      In this case we just need to fill %20 in place of blank space
+         * 2-   If count of blank space is more than 3
+         *      In this case first we need to fill %20. at same time we need 
+         *     to shift all the elements to take the position of blank space
+         * 3-   If count of blank space is less than 3
+         *      In this case we would need to make an extra space to fit MAX
+         *      char in bwtween. all the elements has to be pushed towards 
+         *      end. as assumption of this API is there would be enough space 
+         *      towards end to push the element. if there are not enough 
+         *      space, return error .
+         */
+        if ((str[index] != ' ') && (is_space_flag)) {
+            printf ("\n CASE count = %d index = %d\n", count, index);
+            /* CASE 1*/
+            if (count == MAX) {
+                str [index - count]     = '%';
+                str [(index - count) + 1] = '2';
+                str [(index -count) + 2] = '0';
+                count = 0;
+                is_space_flag = FALSE;
+                printf ("\n String = %s\n", str);
+                last_processed_index = index;
+            }
+
+            /*  CASE 2 */
+            if (count > MAX) {
+                str [index - MAX]     = '%';
+                str [index - MAX + 1] = '2';
+                str [index - MAX + 2] = '0';
+                count -= MAX;
+                temp_index_1 = index - count;
+                temp_index_2 = index;
+
+                while (str[temp_index_2] != '\0' ) {
+                    str[temp_index_1++] = str[temp_index_2++];
+                }
+                count = 0;
+                is_space_flag = FALSE;
+                temp_index_1 = 0;
+                temp_index_2 = 0;
+                last_processed_index = index;
+                }
+
+            if (count < MAX) {
+                temp_index_1 = len;
+                temp_index_2 = len - MAX - count + 1;
+                while (temp_index_2 != index) {
+                    str [temp_index_1 --] = str [temp_index_2 --];
+                }
+
+                str[index - count] = '%';
+                str [index - count +1] = '2';
+                str [index - count+2] = '0';
+                count = 0;
+                is_space_flag = FALSE;
+                temp_index_1 = 0;
+                temp_index_2 = 0;
+                last_processed_index = index;
+
+            }
+        }
+    }
+    return;
+}
+
 int main ()
 {
-    char str1[] = "      a    b     c        ";
+    char str1[] = "a   b             ";
+
     char *str = NULL;
     clock_t begin = clock();
     str = replace_blanck_space_brute_force_method (str1, strlen(str1));
     clock_t end = clock();
     double time_spent_1 = (double)(end - begin) / CLOCKS_PER_SEC;
-    printf ("\n Time spent for API is_unique = %f\n", time_spent_1);
+    printf ("\n Time spent for API First = %f\n", time_spent_1);
     printf ("\n STRING IS  = %s Len = %lu\n\n", str, strlen (str));
+
+    begin = clock ();
+    string_replace_by_api (str1, strlen(str1));
+    end = clock ();
+    printf ("\n Time spent for API Second  = %f\n", time_spent_1);
+    printf ("\n STRING IS  = %s Time spent = %f\n\n", str1, time_spent_1);
 
     return 1;
 }
