@@ -20,6 +20,11 @@
 #include <time.h>
 #include "utility.h"
 
+/*
+ *  This API is brute force method. 
+ * Time complexity  O(n)
+ * Space complexity O(n)
+ */
 char * replace_blanck_space_brute_force_method (char *str, int len) 
 {
 
@@ -29,21 +34,39 @@ char * replace_blanck_space_brute_force_method (char *str, int len)
         printf ("\nBlanck string. No operation needed \n");
     }
 
+    /*
+     * Create new string, memset to 0 and setup NULL char at end
+     */
     char *str_new = malloc (sizeof (char) * (len+1));
     memset (str_new, 0, (sizeof(char) * (len + 1)));
-
-    int index = 0, new_index = 0, is_space = FALSE;
     str_new [len+1] = '\0';
 
+    int index = 0, new_index = 0, is_space = FALSE;
+
     for (index = 0; index < len; index ++) {
+
+        /*
+         * If char is not blanck space and space flag is not set. copy 
+         * it as it is to new string.
+         */
         if (str[index] != ' ' && (!is_space)) {
             str_new[new_index ++] = str [index];
         } 
+
+        /*
+         * If blank space is there, setup the flag
+         */
         if (str[index] == ' ') {
             is_space = TRUE;
             continue;
         }
 
+        /*
+         * if space flag is set. it means we had hit blanck space earlier
+         * and now we have got not End of String & non blank space char.
+         * so now we have to fill %20 in new string . make sure you release 
+         * the flag so that it would be reused. 
+         */
         if ((str[index] != ' ') && (is_space) && (str[index] != '\0')) {
             str_new[new_index ++] = '%';
             str_new[new_index ++] = '2';
