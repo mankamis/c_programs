@@ -167,6 +167,7 @@ void string_replace_by_api (char *str, int len)
                 while (str[temp_index_2] != '\0' ) {
                     str[temp_index_1++] = str[temp_index_2++];
                 }
+                str[temp_index_1] = '\0';
                 index -= count;
                 count = 0;
                 is_space_flag = FALSE;
@@ -177,8 +178,8 @@ void string_replace_by_api (char *str, int len)
                 }
 
             if (count < MAX) {
-                temp_index_1 = len;
-                temp_index_2 = len - MAX - count + 1;
+                temp_index_1 = len + index - 1;
+                temp_index_2 = len - 1;// - MAX - count + 1;
                 while (temp_index_2 != index) {
                     str [temp_index_1 --] = str [temp_index_2 --];
                 }
@@ -201,7 +202,7 @@ void string_replace_by_api (char *str, int len)
 
 int main ()
 {
-    char str1[] = "a   b     c d    ";
+    char str1[] = "a   b     c d";
 
     char *str = NULL;
     clock_t begin = clock();
@@ -214,10 +215,11 @@ int main ()
     begin = clock ();
     string_replace_by_api (str1, strlen(str1));
     end = clock ();
-    printf ("\n STRING IS By 2nd API  = %s Time spent = %f\n\n", 
-            str1, time_spent_1);
+    printf ("\n STRING IS By 2nd API  = %s,// Time spent = %f\n\n", 
+            str1/*, time_spent_1*/);
 
-    return 1;
+    printf(" ********************* ");
+    //return 0;
 }
 
 
