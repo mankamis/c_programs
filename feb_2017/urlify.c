@@ -30,8 +30,6 @@
 char * replace_blanck_space_brute_force_method (char *str, int len) 
 {
 
-    printf ("\n %s(): Start string = %s len = %d",
-            __FUNCTION__, str, len);
     if (str == NULL) {
         printf ("\nBlanck string. No operation needed \n");
         return NULL;
@@ -85,6 +83,7 @@ char * replace_blanck_space_brute_force_method (char *str, int len)
 /*
  * Assumption : string has enough space in last to fit char. 
  *
+ * API NOT WORKING AS OF NOW 
  */
 void string_replace_by_api (char *str, int len) 
 {
@@ -106,7 +105,7 @@ void string_replace_by_api (char *str, int len)
          * if reached end of string. return. no need to process further.
          */
         if (str[index] == '\0') {
-            str[last_processed_index] = '\0';
+            printf ("\n Hitting END\n");
             return;
         }
         /*
@@ -145,7 +144,6 @@ void string_replace_by_api (char *str, int len)
          *      space, return error .
          */
         if ((str[index] != ' ') && (is_space_flag)) {
-            printf ("\n CASE count = %d index = %d\n", count, index);
             /* CASE 1*/
             if (count == MAX) {
                 str [index - count]     = '%';
@@ -153,15 +151,13 @@ void string_replace_by_api (char *str, int len)
                 str [(index -count) + 2] = '0';
                 count = 0;
                 is_space_flag = FALSE;
-                printf ("\n String = %s\n", str);
-                last_processed_index = index;
             }
 
             /*  CASE 2 */
             if (count > MAX) {
-                str [index - MAX]     = '%';
-                str [index - MAX + 1] = '2';
-                str [index - MAX + 2] = '0';
+                str [index - count]     = '%';
+                str [(index - count) + 1] = '2';
+                str [(index - count) + 2] = '0';
                 count -= MAX;
                 temp_index_1 = index - count;
                 temp_index_2 = index;
@@ -195,12 +191,13 @@ void string_replace_by_api (char *str, int len)
             }
         }
     }
+    printf ("\n  END OF %s():", __FUNCTION__);
     return;
 }
 
 int main ()
 {
-    char str1[] = "a   b             ";
+    char str1[] = "a   b";
 
     char *str = NULL;
     clock_t begin = clock();
@@ -208,13 +205,14 @@ int main ()
     clock_t end = clock();
     double time_spent_1 = (double)(end - begin) / CLOCKS_PER_SEC;
     printf ("\n Time spent for API First = %f\n", time_spent_1);
-    printf ("\n STRING IS  = %s Len = %lu\n\n", str, strlen (str));
+    printf ("\n STRING IS by First API  = %s Len = %lu\n\n", str, strlen (str));
 
     begin = clock ();
     string_replace_by_api (str1, strlen(str1));
     end = clock ();
     printf ("\n Time spent for API Second  = %f\n", time_spent_1);
-    printf ("\n STRING IS  = %s Time spent = %f\n\n", str1, time_spent_1);
+    printf ("\n STRING IS By 2nd API  = %s Time spent = %f\n\n", 
+            str1, time_spent_1);
 
     return 1;
 }
