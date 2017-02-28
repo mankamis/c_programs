@@ -151,6 +151,8 @@ void string_replace_by_api (char *str, int len)
                 str [(index -count) + 2] = '0';
                 count = 0;
                 is_space_flag = FALSE;
+                last_processed_index = index;
+                continue;
             }
 
             /*  CASE 2 */
@@ -165,11 +167,13 @@ void string_replace_by_api (char *str, int len)
                 while (str[temp_index_2] != '\0' ) {
                     str[temp_index_1++] = str[temp_index_2++];
                 }
+                index -= count;
                 count = 0;
                 is_space_flag = FALSE;
                 temp_index_1 = 0;
                 temp_index_2 = 0;
                 last_processed_index = index;
+                continue;
                 }
 
             if (count < MAX) {
@@ -187,17 +191,17 @@ void string_replace_by_api (char *str, int len)
                 temp_index_1 = 0;
                 temp_index_2 = 0;
                 last_processed_index = index;
+                continue;
 
             }
         }
     }
-    printf ("\n  END OF %s():", __FUNCTION__);
     return;
 }
 
 int main ()
 {
-    char str1[] = "a   b";
+    char str1[] = "a   b     c d    ";
 
     char *str = NULL;
     clock_t begin = clock();
@@ -210,7 +214,6 @@ int main ()
     begin = clock ();
     string_replace_by_api (str1, strlen(str1));
     end = clock ();
-    printf ("\n Time spent for API Second  = %f\n", time_spent_1);
     printf ("\n STRING IS By 2nd API  = %s Time spent = %f\n\n", 
             str1, time_spent_1);
 
