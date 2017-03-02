@@ -197,29 +197,38 @@ void string_replace_by_api (char *str, int len)
             }
         }
     }
+    printf ("\n STR = %s\n", str);
     return;
 }
 
 int main ()
 {
-    char str1[] = "a   b     c d";
+    char str1[] = "a  b   c";
 
     char *str = NULL;
+    int i = 0;
+#if 0
     clock_t begin = clock();
-    str = replace_blanck_space_brute_force_method (str1, strlen(str1));
+    //str = replace_blanck_space_brute_force_method (str1, strlen(str1));
     clock_t end = clock();
     double time_spent_1 = (double)(end - begin) / CLOCKS_PER_SEC;
     printf ("\n Time spent for API First = %f\n", time_spent_1);
     printf ("\n STRING IS by First API  = %s Len = %lu\n\n", str, strlen (str));
 
     begin = clock ();
+#endif
     string_replace_by_api (str1, strlen(str1));
-    end = clock ();
-    printf ("\n STRING IS By 2nd API  = %s,// Time spent = %f\n\n", 
-            str1/*, time_spent_1*/);
+   // end = clock ();
+    while (str[i] != '\0' && (i < 100)) {
+        printf ("\n i[%d]  =  %c", i, str[i]);
+        i++;
+    }
+    printf ("\n STRING IS By 2nd API  = %s, Time spent = %f len = %d \n\n", 
+            str1, i), strlen (str1);
 
-    printf(" ********************* ");
-    //return 0;
+    fflush(stdout);                                                             
+
+    return 0;
 }
 
 
